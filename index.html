@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List App</title>
+  <style>body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #428bca; /* Blue background color */
+    color: #333; /* Dark text color */
+  }
+  
+  .container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff; /* White background for container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  }
+  
+  h1 {
+    text-align: center;
+    color: #f0ad4e; /* Golden yellow header */
+  }
+  
+  .input-section input,
+  .input-section textarea,
+  .input-section select,
+  .input-section button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Light border color */
+    font-size: 16px;
+    background-color: #fff; /* White background for inputs */
+    color: #333; /* Dark text color */
+  }
+  
+  input[type="date"] {
+    width: calc(100% - 22px); /* Adjust width for date input */
+  }
+  
+  button {
+    background-color: #5bc0de; /* Light blue button color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #31b0d5; /* Darker blue on hover */
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .task-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc; /* Light border for task items */
+    border-radius: 10px;
+    background-color: #fff; /* White background for each task item */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .task-item:hover {
+    transform: translateY(-5px);
+    background-color: #f5f5f5; /* Lighter color on hover */
+  }
+  
+  .task-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #f0ad4e; /* Golden yellow task title */
+  }
+  
+  .task-item p {
+    color: #555; /* Dark gray text color */
+    margin-bottom: 5px;
+  }
+  
+  .task-item button {
+    margin-top: 8px;
+    margin-right: 5px;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ZOYAA(2.0)</h1>
+    <div class="input-section">
+      <input type="text" id="taskInput" placeholder="Enter Task Title">
+      <textarea id="taskDescription" placeholder="Enter Task Description"></textarea>
+      <select id="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <select id="category">
+        <option value="Work">Work</option>
+        <option value="Personal">Personal</option>
+        <option value="Shopping">Shopping</option>
+        <!-- Add more categories as needed -->
+      </select>
+      <input type="date" id="dueDate">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+  <script>// Retrieve tasks from local storage if available
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    
+    function displayTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+    
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+        li.innerHTML = `
+          <h3>${task.title}</h3>
+          <p>${task.description}</p>
+          <p><strong>Priority:</strong> ${task.priority}</p>
+          <p><strong>Category:</strong> ${task.category}</p>
+          <p><strong>Due Date:</strong> ${task.dueDate}</p>
+          <p><strong>Status:</strong> ${task.status}</p>
+          <button onclick="markAsInProgress(${index})">Mark as In Progress</button>
+          <button onclick="markAsCompleted(${index})">Mark as Completed</button>
+          <button onclick="deleteTask(${index})">Delete</button>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+    
+    function addTask() {
+      const title = document.getElementById('taskInput').value;
+      const description = document.getElementById('taskDescription').value;
+      const priority = document.getElementById('priority').value;
+      const category = document.getElementById('category').value;
+      const dueDate = document.getElementById('dueDate').value;
+    
+      if (title !== '') {
+        const newTask = {
+          title,
+          description,
+          priority,
+          category,
+          dueDate,
+          status: 'New'
+        };
+    
+        tasks.push(newTask);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        displayTasks();
+      }
+    }
+    
+    function markAsInProgress(index) {
+      tasks[index].status = 'In Progress';
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      displayTasks();
+    }
+    
+    function markAsCompleted(index) {
+      tasks[index].status = 'Completed';
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      displayTasks();
+    }
+    
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      displayTasks();
+    }
+    
+    // Initial display of tasks
+    displayTasks();
+    </script>
+</body>
+</html>
